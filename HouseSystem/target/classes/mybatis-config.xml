@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>	
+	
+	<settings>
+        <!-- 打印查询语句 -->
+        <setting name="logImpl" value="STDOUT_LOGGING" />
+    </settings>
+	
+	
+  <!-- 数据库运行环境 -->
+  <environments default="development">
+  
+  	<!-- 配置Mysql的环境 -->
+    <environment id="development">
+     
+    	<!-- 配置事务 -->
+      <transactionManager type="JDBC"/>
+      
+      <!-- 配置连接池 -->
+      <dataSource type="POOLED">
+        <property name="driver" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://localhost:3306/house_system?useUnicode=true&amp;characterEncoding=UTF-8"/>
+        <property name="username" value="root"/>
+        <property name="password" value="123"/>
+      </dataSource>
+    </environment>
+  </environments>
+	
+	
+  <!-- 管理映射文件 -->
+  <mappers>
+    <mapper class="com.ssm.dao.inter.IHouseDao"></mapper>
+  </mappers>
+</configuration>
