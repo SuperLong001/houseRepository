@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yidu.dao.IUserDao">
+	
+	<!-- 配置 查询结果的列名和实体类的属性名相对应关系  -->
+	<resultMap id="userMap" type="UserInfo">
+		<!-- 主键字段的对应 -->
+		<id column="user_id" property="userId"></id>
+		
+		<result column="user_name" property="userName"></result>
+		
+		<result column="user_pass" property="userPass"></result>
+		
+	</resultMap>
+	
+	<!-- 抽取重复的sql语句 -->
+	<!-- <sql id="defaultUser">
+		select *　from user_info
+	</sql> -->
+	
+	<!-- 引用  -->
+	<!-- <include refid="defaultUser"></include> -->
+	
+	
+	<select id="queryAll" resultMap="userMap">
+		SELECT * FROM user_info
+	</select>
+	
+	<insert id="saveUser" parameterType="com.yidu.bean.UserInfo">
+		<selectKey keyColumn="user_id" keyProperty="userId" order="AFTER" resultType="int">
+			select last_insert_id();
+		</selectKey>
+	
+		insert into user_info (user_name,user_pass)  values(#{userName},#{userPass})
+	</insert>
+	
+	
+	<delete id="deleteUser" parameterType="java.lang.Integer">
+		delete from user_info where user_id = #{id}
+	</delete>
+	
+	<update id="updateUser" parameterType="com.yidu.bean.UserInfo">
+		update user_info set user_name =#{userName},user_pass = #{userPass} where user_id=#{userId}
+	</update>
+	
+	<select id="fuzzyQuery" parameterType="String" resultMap="userMap">
+		select * from user_info where user_name like #{userName}
+	</select> 
+	
+	<select id="queryTotal" resultType="int">
+		select count(*) from user_info 
+	</select>
+	
+	<select id="queryVo" resultType="String" parameterType="com.yidu.bean.QueryVo">
+		select  user_name as userName from user_info where user_id = #{userInfo.userId}
+	</select>
+	
+	<select id="inquireSQL" resultMap="userMap" parameterType="UserInfo">
+		select * from user_info 
+		<where>
+			<if test="userId != 0 ">
+				and user_id = #{userId}
+			</if>
+			<if test="userName != null ">
+				and user_name = #{userName}
+			</if>
+			
+			<if test="number !=null and number.size()>0">
+				<foreach collection="number" open="and user_id in(" close=")" separator="," item="userId">
+					#{userId}
+				</foreach>
+			</if>
+		</where>
+	</select>
+	
+</mapper>
